@@ -72,41 +72,39 @@ public class MemberService {
     public boolean findpassword(MemberDto memberDto) {
         //1. 모든 엔티티 호출
         List<MemberEntity> memberEntities = memberRepository.findAll();
-        for (MemberEntity memberEntity : memberEntities){
-            if (memberEntity.getM_id().equals(memberDto.getM_id()) &&
-                    memberEntity.getM_email().equals(memberDto.getM_email())) {
 
-                String to = "dhehdwls44@naver.com";
-                String from = "dhehdwls43@naver.com";
-                String subject = "Ansan 계정 임시 비밀번호 발송";//메일제목
-                StringBuilder body = new StringBuilder();
-                //stringBuilder : 문자열 연결 클래스 [문자열1+문자열2]
-                body.append("<html><body><h1>Ansan계정 임시 비밀번호</h1>");
+        for( MemberEntity memberEntity  :  memberEntities) {
 
-                Random random = new Random();
-                //임시 비밀번호 만들기
-                StringBuilder temppassword =new  StringBuilder();
-                for(int i = 0 ;i<12;i++){//12자리 만들기
-                   //랜덤숫자-->문자면환[문자마다]
-                 temppassword.append((char)((int)(random.nextInt(26))+97));
-                }
+            StringBuilder body = new StringBuilder();   // StringBuilder  : 문자열 연결 클래스  [ 문자열1+문자열2 ]
+            body.append("<html> <body><h1> Ansan 계정 임시 비밀번호 </h1>");    // 보내는 메시지에 html 추가
 
-                    body.append("<div>" + temppassword + "</div></html>"); // 보내는 메시지에 임시비밀번호를 html 에 추가
-                    //엔티티내 패스워드 변경경
-                   memberEntity.setM_password(temppassword.toString());
-                try {
-                    MimeMessage message = javaMailSender.createMimeMessage();
-                    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "utf-8");
+            Random random = new Random();
+            // 임시 비밀번호 만들기
+            StringBuilder temppassword = new StringBuilder();
+            for (int i = 0; i < 12; i++) {  // 12 자리 만들기
+                // 랜덤 숫자 -> 문자 변환
+                temppassword.append((char) ((int) (random.nextInt(26)) + 97));
+            }
+            body.append("<div>" + temppassword + "</div></html>");      // 보내는 메시지에 임시비밀번호를 html에 추가
 
-                    mimeMessageHelper.setFrom("dhehdwls44@naver,com", "Ansan");
-                    mimeMessageHelper.setTo( "dhehdwls43@naver,com");
-                    mimeMessageHelper.setSubject("Ansan 계정 임시 비밀번호 발송 ");
-                    mimeMessageHelper.setText(body.toString(), true);
-                    javaMailSender.send(message);
-                }
-                catch ( Exception e ){ System.out.println("메일전송 실패 " + e) ; };
+            // !!!엔티티내 패스워드 변경
+            memberEntity.setM_password(temppassword.toString());     //JPA
+
+            try {
+                // Mime : 전자우편 포멧 프로토콜[통신 규약]
+                // SMTP : 전자우편 전송 프로토콜 [ 통신 규약 ]
+                MimeMessage message = javaMailSender.createMimeMessage();
+                MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, true, "utf-8");
+                mimeMessageHelper.setFrom("dhehdwls44@naver,com", "Ansan");      // 보내는사람  //  이름
+                mimeMessageHelper.setTo("dhehdwls43@naver,com");                                                 //  받는사람
+                mimeMessageHelper.setSubject("Ansan 계정 임시 비밀번호 발송 ");                      // 메일 제목
+                mimeMessageHelper.setText(body.toString(), true);                                    // 메일 내용    // html 형식유무
+                javaMailSender.send(message);     // 메일 전송
+
                 return true;
-                }
+            } catch (Exception e) {
+                System.out.println("메일전송 실패 " + e);
+            }
         }
         return false;
     }
