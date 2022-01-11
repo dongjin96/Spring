@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace = "header.html :: header"></div>
+<script th:src = "@{/js/board.js}"></script>
+<div class = "container">
+    <td th:text="${boardDto.b_num}"></td>
+    <td th:text="${boardDto.b_title}"></td>
+    <td th:text="${boardDto.b_contents}"></td>
+    <td th:text="${boardDto.b_write}"></td>
+    <td th:text="${boardDto.b_view}"></td>
+    <td th:text="${boardDto.b_createdDate}"></td>
+    <img th:src="@{ '/upload/' + ${boardDto.b_img}  }">
+
+</div>
+<!--jsp: <button onclick="bdelete(<%=boardDto.b_n_um%)">삭제</button>-->
+<!--로그인 된 아이디가 작성자와 같으면 지운다는것-->
+
+    <button th:if="${session.logindto !=null} and${session.logindto.m_id == boardDto.b_write }" th:onclick="bdelete([[${boardDto.b_num}]])" >삭제</button>
+
+<button th:if="${session.logindto !=null} and${session.logindto.m_id == boardDto.b_write }">
+    <a th:href="@{'/board/boardupdate/' +${boardDto.b_num}}">수정</a></button>
+</body>
+</html>
