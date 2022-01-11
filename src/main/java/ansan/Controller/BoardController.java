@@ -71,7 +71,7 @@ public class BoardController {
         MemberDto memberDto = (MemberDto) session.getAttribute("logindto");
         boardDto.setB_write(memberDto.getM_id());
         boardService.boardwrite(boardDto);
-        return "redirect:/board/boardlist"; // 글쓰기 성공시 게시판 목록이동
+        return "redirect:board/boardlist"; // 글쓰기 성공시 게시판 목록이동
     }
 
     // 게시물 보기 페이지 이동
@@ -109,6 +109,6 @@ public class BoardController {
     @PostMapping("/board/boardcontroller")
     public String boardcontroller(BoardDto boardDto){
         boolean result = boardService.update(boardDto);
-        return "redirect:/board/boardview/"+boardDto.getB_num();
+        return "redirect:board/boardview/"+boardDto.getB_num();
     }
 }
