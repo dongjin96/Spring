@@ -45,11 +45,12 @@ public class BoardController {
     @PostMapping("/board/boardwritecontroller")
     public String boardwritecontroller(@RequestParam("b_img")MultipartFile file) throws IOException {
         //파일처리[JSP(COS라이브러리)--->SPRING (MultipartFile클래스)]
-        String dir = request.getSession().getServletContext().getRealPath("website/upload/");
+        String dir = request.getSession().getServletContext().getRealPath("/");
         //String dir = "C:\\Users\\505\\Desktop\\Spring\\Spring\\src\\main\\resources\\static\\upload";
         String filepath = dir + file.getOriginalFilename(); // 저장경로 +form에서 첨부한 파일 이름 호출
         //file.getOriginalFilename() : form 첨부파일 호출
         file.transferTo(new File(filepath));//transferTO ㅣ 파일 저장 [예외처리해야해오!@]
+        System.out.println( filepath );
         // 무조건 예 외 처리 해야한다
         //transferTo :파일 저장 [스트림 없이]
         //제목 과 내용도 호출
