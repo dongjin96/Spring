@@ -13,3 +13,21 @@ $.ajax({
 });
 
 }
+function boardwrite(){
+    //form 태그 가져오기
+    var formData = new FormData(form);
+    // 폼을 컨트롤러에게 비동기 전송
+    $.ajax({
+        type:"POST",
+        url : "/board/boardwritecontroller",
+        data : formData,
+        processData : false,
+        contentType : false, //첨부파일 보낼떄.
+        success : function(data){
+        if(data == 1){
+            location.href="/board/boardlist";
+        }
+
+        }
+    });
+}

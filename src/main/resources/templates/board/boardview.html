@@ -14,7 +14,8 @@
     <td th:text="${boardDto.b_write}"></td>
     <td th:text="${boardDto.b_view}"></td>
     <td th:text="${boardDto.b_createdDate}"></td>
-    <img th:src="@{ '/upload/' + ${boardDto.b_img}  }">
+   <!-- <img th:src="@{ '/upload/' + ${boardDto.b_img}  }">-->
+    <a th:href="@{/board/filedownload(b_img=${boardDto.b_img})}"th:text="${boardDto.b_realimg}"></a>
 
 </div>
 <!--jsp: <button onclick="bdelete(<%=boardDto.b_n_um%)">삭제</button>-->
