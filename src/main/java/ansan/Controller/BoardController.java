@@ -3,6 +3,7 @@ package ansan.Controller;
 import ansan.Domain.Dto.BoardDto;
 import ansan.Domain.Dto.MemberDto;
 import ansan.Domain.Entity.board.BoardEntity;
+import ansan.Domain.Entity.board.ReplyEntitiy;
 import ansan.Service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,7 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class BoardController {
@@ -147,11 +147,17 @@ public class BoardController {
     public String boardview(@PathVariable("b_num") int b_num, Model model) {
 
         BoardDto boardDto = boardService.getboard(b_num);
-
         // 첨부파일 존재하면
         if (boardDto.getB_img() != null) boardDto.setB_realimg(boardDto.getB_img().split("_")[1]);
         model.addAttribute("boardDto", boardDto);
-        return "board/boardview";
+
+        //해당 게시물번호의 댓글 호출
+        List<ReplyEntitiy> replyEntitiys = boardService.getreplylist(b_num);
+        //정렬후 ->내림차순[댓글번호]
+        Collections.reverse(replyEntitiys);
+        model.addAttribute("replyEntitiys",replyEntitiys);
+       return "board/boardview";
+
     }
 
     //게시물 삭제 처리
@@ -213,6 +219,21 @@ public class BoardController {
         return "redirect:/board/boardview/" + b_num;
     }
 
+    @GetMapping("/board/replywrite")
+    @ResponseBody
+    public String  replywirte( @RequestParam("bnum") int bnum  ,
+                              @RequestParam("rcontents") String rcontents  ){
+        HttpSession session = request.getSession();
+        MemberDto memberDto =
+                (MemberDto)session.getAttribute("logindto");
+        if(memberDto ==null){
+            return "2";
+        }
+        boardService.replywirte( bnum , rcontents , memberDto.getM_id()  );
+        // 게시물번호 , 댓글내용 , (로그인된)아이디디
+        return "1" ;
+
+    }
 
 
 }

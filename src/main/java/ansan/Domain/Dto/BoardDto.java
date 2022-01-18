@@ -10,7 +10,7 @@ public class BoardDto {
     private String b_title;
     private String b_contents;
     private String b_write;
-    private String b_createdDate;;
+    private String b_createdDate;
     private int b_view;
     private String b_img;
     private String b_realimg;
@@ -21,7 +21,7 @@ public class BoardDto {
                 .b_title( this.b_title )
                 .b_contents(this.b_contents )
                 .b_write( this.b_write)
-                 .b_img( this.b_img).
+                .b_img( this.b_img ).
                 build();
     }
 }

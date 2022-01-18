@@ -4,6 +4,8 @@ package ansan.Service;
 import ansan.Domain.Dto.BoardDto;
 import ansan.Domain.Entity.board.BoardEntity;
 import ansan.Domain.Entity.board.BoardRepository;
+import ansan.Domain.Entity.board.ReplyEntitiy;
+import ansan.Domain.Entity.board.ReplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +148,35 @@ public class BoardService {
        }
     }
 
+    // 댓글 등록
+    @Autowired
+     private ReplyRepository replyRepository;
+    //댓글등록
+    public boolean replywirte( int bnum , String rcontents , String rwrite ){
+        // 게시물번호에 해당하는 게시물 엔티티 출력 합니다
+        Optional<BoardEntity> entityOptional =   boardRepository.findById( bnum );
+
+        ReplyEntitiy replyEntitiy = ReplyEntitiy.builder()
+                .rcontents( rcontents )
+                .rwrite( rwrite )
+                .boardEntity ( entityOptional.get() ) // 해당 게시물의 엔티티 넣기
+                .build();
+        //댓글 엔티티에
+        replyRepository.save(replyEntitiy);
+        //해당 게시물내 댓글 저장 댓글->게시물 저장
+        entityOptional.get().getReplyEntitiy().add(replyEntitiy);
+        return false;
+    }
+
+    // 모든 댓글 출력
+    public List<ReplyEntitiy> getreplylist(int bnum){
+        //해당 게시물번호의 엔티티 호출
+        Optional<BoardEntity>entityOptional=boardRepository.findById(bnum);
+        //2. g해당 엔티티의 댓글 리스트 호출
+        List<ReplyEntitiy> replyEntitiys = entityOptional.get().getReplyEntitiy();
+
+        return replyEntitiys;
+    }
 }
 
 
