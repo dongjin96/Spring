@@ -33,8 +33,8 @@ public class BoardEntity extends BaseTimeEntity {
     @Column(name = "b_img")
     private String b_img;
 
-    // 여러개 댓글저장할 리스트
-    @OneToMany(mappedBy="boardEntity")
+    // 여러개 댓글저장할 리스트 cascade= CascadeType.ALL 삭제되면 다같이삭제된다
+    @OneToMany(mappedBy="boardEntity",cascade= CascadeType.ALL)
     private List<ReplyEntitiy> replyEntitiy = new ArrayList<>();
 
 }

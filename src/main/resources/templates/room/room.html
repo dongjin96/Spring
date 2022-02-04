@@ -1,0 +1,68 @@
+
+
+
+<head>
+    <link th:href="@{/css/room.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div th:id="${'carousel'+room.rnum}" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+
+        <div class="carousel-item active " > <!-- 대표 이미지  -->
+            <img th:src="@{ '/roomimg/'+${ room.roomimgEntities.get(0).rimg } }"  class="d-block w-100">
+        </div>
+        <div class="carousel-item " th:each=" roomimg :  ${ room.roomimgEntities }"> <!-- 반복문 -->
+            <!-- active : 현재 보고있는 이미지 설정 [  한곳에만 설정 ]  -->
+            <img th:src="@{ '/roomimg/' + ${roomimg.rimg} }" class="d-block w-100" alt="...">
+        </div>
+
+    </div>
+    <button class="carousel-control-prev" type="button" th:data-bs-target="${'#carousel'+room.rnum}" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" th:data-bs-target="${'#carousel'+room.rnum}" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div><hr>
+<button class="form-control" data-bs-target="#notemodal" data-bs-toggle="modal"> 문의하기 </button> <hr>
+<!--<button  th:data-bs-target="#notemodal" data-bs-toggle="modal"> 문의하기 </button>-->
+매물정보
+<table class="table">
+    <tr> <td>방번호</td> <td th:text="${room.rnum}"></td> </tr>
+    <tr> <td>이름</td> <td th:text="${room.rname}"></td> </tr>
+    <tr> <td>가격</td> <td th:text="${room.rprice}"></td> </tr>
+    <tr> <td>면적</td> <td th:text="${room.rarea}"></td> </tr>
+    <tr> <td>관리비</td> <td th:text="${room.rmanagementfee}"></td> </tr>
+    <tr> <td>준공날짜</td> <td th:text="${room.rcompletiondate}"></td> </tr>
+    <tr> <td>입주가능일</td> <td th:text="${room.rindate}"></td> </tr>
+    <tr> <td>구조</td> <td th:text="${room.rstructure}"></td> </tr>
+    <tr> <td>층/건물층수</td> <td th:text="${room.rfloor}"></td> </tr>
+    <tr> <td>건물종류</td> <td th:text="${room.rkind}"></td> </tr>
+    <tr> <td>주소</td> <td th:text="${room.raddress}"></td> </tr>
+    <tr> <td>내용</td> <td th:text="${room.rcontents}"></td> </tr>
+    <tr> <td>상태</td> <td th:text="${room.ractive}"></td> </tr>
+    <tr> <td>거래방식</td> <td th:text="${room.rtrans}"></td> </tr>
+
+</table>
+
+<!-- 문의삭제 모달 fade가있어야 처음에 안보임    data-bs-keyboard="false" data-bs-backdrop="static": 주변클릭을막아준다-->
+<div class="modal fade" tabindex="-1" id="notemodal" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document"> <!--modal-lg사이즈-->
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-body p-4 text-center">
+                <h5 class="mb-0"> 방문의하기 </h5>
+                <p class="mb-3" id="notemsg"> 방주인에게 문의하기 </p>
+                <textarea class="form-control" row="30" id="ncontents"></textarea>
+            </div>
+            <div class="modal-footer flex-nowrap p-0">
+                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-right" th:onclick="notewrite([[${room.rnum}]])"><strong> 문의하기.</strong></button>
+                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal"> 문의취소 취소합니다. </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>

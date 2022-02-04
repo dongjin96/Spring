@@ -18,7 +18,7 @@
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <!--개발자 js 가져오기-->
 <script th:src="@{/js/main.js}"></script>
-<!-- 다음 우편 api js 호출 -->
+<!-- 다음 우편 api js 호출  이미 있음-->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 <div class="container">
@@ -31,14 +31,24 @@
             <li><a th:href="@{/}" class="nav-link px-2 link-secondary">Home</a></li>
             <li><a th:href="@{/board/boardlist(keyword=null , search=null )}" class="nav-link px-2 link-dark">커뮤니티 </a></li>
             <li><a th:href="@{/board/boardlist}" class="nav-link px-2 link-dark">커뮤니티 </a></li>
+            <li><a th:if="${session.logindto != null}" th:href="@{/room/write}" class="nav-link px-2 link-dark"> 방등록 </a></li>
+            <li><a th:if="${session.logindto != null}" th:href="@{/admin/roomlist}" class="nav-link px-2 link-dark"> 방리스트[관리자] </a></li>
+            <li><a th:href="@{/room/roomview}" class="nav-link px-2 link-dark"> 방 매물보기 </a></li>
+            <li><a th:if="${session.logindto != null}" th:href="@{/member/notelist}" class="nav-link px-2 link-dark" th:text="${'쪽지('+session.nreadcount+')'}"> 쪽지 확인함 </a></li>
 
         </ul>
 
         <div class="col-md-3 text-end">
+           <!-- 세션과 동일하게 인증 정보 호출-->
+            <div sec:authorize="isAuthenticated()">
+                <span sec:authentication="principal.mid"></span>님 안녕하세요
+            </div>
             <button th:if="${session.logindto==null}" type="button" class="btn btn-outline-primary me-2" data-bs-target="#modallogin" data-bs-toggle="modal">로그인</button>
+            <a th:if="${session.logindto==null}"th:href="@{/member/login}"> <button type="button" class="btn btn-outline-primary me-2">로그인페이지</button></a>
             <a th:if="${session.logindto==null}"th:href="@{/member/signup}"> <button type="button" class="btn btn-outline-primary me-2">회원가입</button></a>
             <a th:if="${session.logindto != null }" th:href="@{/member/info}"><button type="button" class="btn btn-outline-info">마이페이지</button></a>
             <a th:if="${session.logindto!=null}"th:href="@{/member/logout}"> <button type="button" class="btn btn-primary">로그아웃</button></a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/member/logout}"><button type="button" class="btn btn-outline-primary me-2">로그아웃[인가 제거]</button></a>
         </div>
     </header>
 </div>

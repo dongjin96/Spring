@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="header.html::header"> </div>
+<script th:src="@{/js/note.js}"></script>
+<div class="container">
+    <h3> 받은 쪽지 </h3>
+    <table class="table">
+        <tr th:each="room : ${rooms}">
+            <td th:text="${room.rnum}"></td>
+            <td th:text="${room.rname}"></td>
+            <td>
+                <div th:each = "note : ${room.noteEntities}">
+                    <span th:text="${ '보낸사람 : ' + note.memberEntity.m_id}"></span>
+                    <span th:text="${ '내용 : ' + note.ncontents}"></span>
+                    <span th:text="${ '보낸날짜 : ' + note.createdDate}"></span>
+                    <span th:if="${note.nreply != null}">답변완료 </span>
+                    <span th:if="${note.nreply == null}"><button th:onclick="notereply( [[${ note.nnum }]] , [[${ note.ncontents }]] )"> 답변하기 </button></span>
+                    <span th:text="${note.nread ==0} ? 안읽음 : 읽음 "></span>
+
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<div class="container">
+    <h3> 보낸 쪽지 </h3>
+    <table class="table">
+        <tr th:each="note : ${notes}">
+            <td th:text="${note.roomEntity.rnum}"></td>
+            <td th:text="${note.roomEntity.rname}"></td>
+            <td>
+                <span th:text="${ '내용 : ' + note.ncontents}"></span>
+                <span th:text="${ '보낸날짜 : ' + note.createdDate}"></span>
+                <span th:if="${note.nreply != null}" th:text="${note.nreply}"></span>
+                <span th:if="${note.nreply == null}">답변대기중</span>
+            </td>
+        </tr>
+    </table>
+</div>
+</div>
+
+
+
+<!--답변모달-->
+<div class="modal fade" tabindex="-1" id="notereply" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document"> <!--modal-lg사이즈-->
+        <div class="modal-content rounded-4 shadow">
+            <div class="modal-body p-4 text-center">
+                <h5 class="mb-0"> 방문의 답변 </h5>
+                <p class="mb-3" id="notemsg"> 방문의자에게 답변합니다 </p>
+                <div id="rcontents"></div>
+                <textarea class="form-control" rows="10" id="nreply"></textarea>
+                <input type="hidden" id="nnum" name="nnum">
+            </div>
+            <div class="modal-footer flex-nowrap p-0">
+                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0 border-right" onclick="notereplywrite"><strong> 문의하기.</strong></button>
+                <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 m-0 rounded-0" data-bs-dismiss="modal"> 문의취소 취소합니다. </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+</body>
+</html>

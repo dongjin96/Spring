@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="header.html::header"> </div>
+<link th:href="@{/css/simple-sidebar.css}" rel="stylesheet"><!--사이드바 css-->
+    <div class="container my-3">
+    </div>
+        <div id="map" style="width:100%;height:700px;"></div> <!-- 지도가 표시되는 구역 -->
+    <!--사이드바-->
+    <div class="sidebar">
+        <span class="sidebar-brand">
+            <a href="javascript:void(0)" data-toggle="sidebar">x</a>
+        </span>
+        <div id="contents"> <!-- 사이드바 내용물 -->
+
+        </div>
+    </div>
+    <a href="javascript:void(0)" data-toggle="sidebar" id="sidebartoggle">사이드바열기</a><!--마크클릭시 사이드바 -->
+<!--인중 스크립트-->
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0138889e53a5192451c9027ae217b603&libraries=clusterer"></script>
+<!--지도구현스크립트-->
+<script th:src = "@{/js/roomview.js}"></script>
+<script th:src = "@{/js/simple-sidebar.js}"></script><!--마크클릭시 사이드바스크립트 -->
+
+</body>
+</html>

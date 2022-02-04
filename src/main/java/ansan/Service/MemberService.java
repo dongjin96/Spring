@@ -1,26 +1,40 @@
 package ansan.Service;
 
+import ansan.Domain.Dto.IntergratedDto;
 import ansan.Domain.Dto.MemberDto;
 import ansan.Domain.Entity.Member.MemberEntity;
 import ansan.Domain.Entity.Member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @Service
-public class MemberService {
-    @Autowired
+public class MemberService implements UserDetailsService{
+    @Autowired // 메모리할당을 생성 ///새로운생성장 생성
     MemberRepository memberRepository ;
 
     // 회원등록 메소드
     public boolean membersignup( MemberDto memberDto ){
+        //패스워드 암호화[BCrypyPasswordEncoder]
+        //1. 암호화 클래스 객체 생성
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        //2. 입력받은  memberDto 내 패스워드 재설정 [암호화객체명.encode(입력받은 패스워드)]
+        memberDto.setM_password(passwordEncoder.encode(memberDto.getM_password()));
+
         memberRepository.save( memberDto.toentity()  );  // save(entity) : insert / update :  Entity를 DB에 저장
         return true;
     }
@@ -33,20 +47,20 @@ public class MemberService {
         }
         return true;
     }
-
-    // 회원 로그인 메소드
+//사용안하는이유 [스프링 시큐리티 사용시 로그인 처리 메소드 제공받기 때문에 사용x]
+  /*  // 회원 로그인 메소드
     public MemberDto login(MemberDto memberDto) {
         List<MemberEntity> memberEntityList = memberRepository.findAll();
         for (MemberEntity memberEntity : memberEntityList) {
-            if (memberEntity.getM_id().equals(memberDto.getM_id()) &&
+            if (memberEntity.getMid().equals(memberDto.getM_id()) &&
                     memberEntity.getM_password().equals(memberDto.getM_password())) {
                 return MemberDto.builder()
-                        .m_id(memberEntity.getM_id())
+                        .m_id(memberEntity.getMid())
                         .m_num(memberEntity.getM_num()).build();
             }
         }
         return null;
-    }
+    }*/
 
     //회원 아이디 찾기
     public String findid(MemberDto memberDto) {
@@ -58,7 +72,7 @@ public class MemberService {
             if (memberEntity.getM_name().equals(memberDto.getM_name()) &&
                     memberEntity.getM_email().equals(memberDto.getM_email())) {
                 // 아이디가 반환된다
-                return memberEntity.getM_id();
+                return memberEntity.getMid();
             }
 
             }
@@ -72,7 +86,7 @@ public class MemberService {
         //1. 모든 엔티티 호출
         List<MemberEntity> memberEntities = memberRepository.findAll();
         for (MemberEntity memberEntity : memberEntities) {
-            if (memberEntity.getM_id().equals(memberDto.getM_id()) && memberEntity.getM_email().equals(memberEntity.getM_email())) {
+            if (memberEntity.getMid().equals(memberDto.getM_id()) && memberEntity.getM_email().equals(memberEntity.getM_email())) {
                 StringBuilder body = new StringBuilder();   // StringBuilder  : 문자열 연결 클래스  [ 문자열1+문자열2 ]
                 body.append("<html> <body><h1> Ansan 계정 임시 비밀번호 </h1>");
 
@@ -113,7 +127,7 @@ public class MemberService {
         //2. 모든 엔티티 반복문 돌려서 엔티티 하나씩 가져오기
         for(MemberEntity memberEntity :memberEntities){
             //3. 해당 엔티티가 입력한 아이디와 동일하면
-            if(memberEntity.getM_id().equals(m_id)){
+            if(memberEntity.getMid().equals(m_id)){
                 return true;//중복
             }
         }
@@ -141,7 +155,7 @@ public class MemberService {
        Optional<MemberEntity>entityoptional= memberRepository.findById(m_num);
        //찾은 엔티티를 dto 변경후 반환[패스워드 , 수정 날짜 제외]
         return MemberDto.builder()
-                .m_id(entityoptional.get().getM_id())
+                .m_id(entityoptional.get().getMid())
                 .m_name(entityoptional.get().getM_name())
                 .m_address(entityoptional.get().getM_address())
                 .m_email(entityoptional.get().getM_email())
@@ -162,6 +176,26 @@ public class MemberService {
            return true; //회원탈퇴
         }
         return false; //회원탈퇴X
+    }
+    // 회원번호 -> 회원엔티티 반환
+    public MemberEntity getmentitiy( int mnum){
+        Optional<MemberEntity> entityOptional
+                = memberRepository.findById(mnum);
+        return  entityOptional.get();
+    }
+
+    @Override //member/logincontroller url 호출시 실행되는 메소드 [로그인 처리 (인증처리 메소드)]
+    public UserDetails loadUserByUsername(String mid) throws UsernameNotFoundException{
+
+       //회원 아이디로 회원 엔티티 찾기
+        Optional<MemberEntity>entityOptional=memberRepository.findBymid(mid);
+        MemberEntity memberEntity = entityOptional.orElse(null);
+                                    //orElse(null)만약에 엔티티 가 없으면 null
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(memberEntity.getRoleKey()));
+                                //GrantedAuthority :권한 [키 저장 가능한 클래스]
+      //회원정보와 권한을 갖는 UserDetails 반환
+        return new IntergratedDto(memberEntity,authorities);
     }
 
 }

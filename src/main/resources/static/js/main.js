@@ -1,3 +1,14 @@
+//js load될떄 무조건 1번 실행
+
+$(function(){
+    $ajax({
+       url:"/nreadcount",
+      success:function(data){}
+    });
+});
+
+
+
 function login(){
 
     var m_id = $("#login_m_id").val();

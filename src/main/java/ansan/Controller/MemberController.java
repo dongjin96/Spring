@@ -3,8 +3,10 @@ package ansan.Controller;
 
 import ansan.Domain.Dto.MemberDto;
 import ansan.Service.MemberService;
+import ansan.Service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,13 +43,13 @@ public class MemberController {
 
         memberDto.setM_address( address1+"/"+address2+"/"+address3+"/"+address4 );
 
-        System.out.println( memberDto);
+
         // 자동주입 : form 입력한 name 과 dto의 필드명 동일하면 자동주입 // 입력이 없는 필드는 초기값[ 문자=null , 숫자 = 0 ]
         memberService.membersignup(memberDto);
         return "redirect:/";  // 회원가입 성공시 메인페이지 연결
     }
 
-    @PostMapping("/member/logincontroller")
+/*    @PostMapping("/member/logincontroller") //사용안하는이유 [스프링 시큐리티 사용시 로그인 처리 메소드 제공받기 때문에 사용x]
     @ResponseBody
     public String logincontroller( @RequestBody MemberDto memberDto){
         // 폼 사용시에는 자동주입 O
@@ -64,13 +66,13 @@ public class MemberController {
         }
         // 타임리프를 설치했을경우  RETRUN URL , HTML
         // html 혹은 url 아닌 값 반환할때  @ResponseBody
-    }
-    @GetMapping("/member/logout")
-    public String logout(){
-        HttpSession session = request.getSession();
-        session.setAttribute( "logindto" , null);   // 기존 세션을 null 로 변경
-        return "redirect:/"; // 로그아웃 성공시 메인페이지로 이동
-    }
+    }*/
+//    @GetMapping("/member/logout")
+//    public String logout(){
+//        HttpSession session = request.getSession();
+//        session.setAttribute( "logindto" , null);   // 기존 세션을 null 로 변경
+//        return "redirect:/"; // 로그아웃 성공시 메인페이지로 이동
+//    }
     //회원정보 찾기 페이지 연결
     @GetMapping("/member/findid")
     public String findid(){
@@ -158,8 +160,23 @@ public class MemberController {
         else{return 2;}
 
     }
+    //방 쪽지 확인 페이지
+    @Autowired
+    private RoomService roomService;
+    @GetMapping("/member/notelist")
+    public String notelist(Model model){
+        model.addAttribute("rooms", roomService.getmyroomlist());
+        model.addAttribute("notes",roomService.getmynotelist());
+        return "member/notelist";
+    }
 
-
-
-
+    //답변변
+    @Transactional
+    public String notereplywrite(@RequestParam("nnum")int nnum,
+                                 @RequestParam("nreply")String nreply){
+        roomService.notereplywrite(nnum,nreply);
+        return "1";
+    }
 }
+
+

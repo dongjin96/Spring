@@ -3,7 +3,7 @@ package ansan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-@EnableJpaAuditing//jpa 변화 감지
+@EnableJpaAuditing//jpa가 엔티티의 변화를 감지
 @SpringBootApplication // 스프링부트 사용 주입
 
 public class Appstart {

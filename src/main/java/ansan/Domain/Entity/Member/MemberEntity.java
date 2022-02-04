@@ -1,9 +1,14 @@
 package ansan.Domain.Entity.Member;
 
 import ansan.Domain.Entity.BaseTimeEntity;
+import ansan.Domain.Entity.Room.NoteEntity;
+import ansan.Domain.Entity.Room.RoomEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Setter
 @Entity//DB내 테이블과 연결
 @Table(name="member")//테이블 속성
@@ -16,7 +21,7 @@ public class MemberEntity extends BaseTimeEntity {
    @GeneratedValue(strategy = GenerationType.IDENTITY)//autokey
    private int m_num; //회원번호
     @Column
-    private String m_id;
+    private String mid;
     @Column
     private String m_password;
     @Column
@@ -31,7 +36,21 @@ public class MemberEntity extends BaseTimeEntity {
     private  String m_address;
     @Column
     private  int m_point;
+    @Enumerated(EnumType.STRING)//
     @Column
-    private  String m_grade;
+    private  Role m_grade;//회원등급
+     //DB는 ROLE 자료형X->  @Enumerated(EnumType.String)문자열 자료형 변환
+
+  //해당 Role에 key반환 메소드드
+    public String getRoleKey(){return this.m_grade.getKey();}
+
+
+
+ // 룸 리스트
+ @OneToMany( mappedBy ="memberEntity" )
+ private List<RoomEntity> roomEntities = new ArrayList<>();
+ //문의 리스트
+ @OneToMany( mappedBy ="memberEntity" )
+ private List<NoteEntity> NoteEntities = new ArrayList<>();
 
 }
