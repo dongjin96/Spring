@@ -1,6 +1,7 @@
 package ansan.config;
 
 import ansan.Service.MemberService;
+import ansan.Service.OauthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -36,7 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //시큐리�
                 .defaultSuccessUrl("/") // 로그인 성공시 이동할 URL
                 .usernameParameter("mid")       // 시큐리티 로그인[ 아이디 ] 기본값은 : username  -> mid 으로 변수명 사용
                 .passwordParameter("m_password") // 시큐리티 로그인 [ 패스워드 ] 기본값은 : password -> m_password 으로 변수명 사용
-
                 .and()
                 .logout()   // 로그아웃 관련 설정
                 .logoutRequestMatcher( new AntPathRequestMatcher("/member/logout") ) // 로그아웃 URL 설정
@@ -44,8 +44,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { //시큐리�
                 .invalidateHttpSession(true) // 세션 초기화
                 .and()
                 .exceptionHandling() // 예외[오류] 페이지 설정
-                .accessDeniedPage("/error") ; // 오류 페이지 발생시 -> 오류페이지 URL
+                .accessDeniedPage("/error")  // 오류 페이지 발생시 -> 오류페이지 URL
+                .and()
+                .oauth2Login()//oauth2 로그인설정
+                .userInfoEndpoint()
+                .userService(oauthService); //oauth2 서비스
     }
+    @Autowired
+    private OauthService oauthService;
     @Autowired
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

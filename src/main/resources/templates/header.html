@@ -39,10 +39,11 @@
         </ul>
 
         <div class="col-md-3 text-end">
-           <!-- 세션과 동일하게 인증 정보 호출-->
+            <a href="https://kauth.kakao.com/oauth/logout?client_id=2e1bdb5bd5c91d104ac4e297f271bdf9&logout_redirect_uri=http://localhost:8081">로그아웃</a>
+          <!--  세션과 동일하게 인증 정보 호출
             <div sec:authorize="isAuthenticated()">
                 <span sec:authentication="principal.mid"></span>님 안녕하세요
-            </div>
+            </div>-->
             <button th:if="${session.logindto==null}" type="button" class="btn btn-outline-primary me-2" data-bs-target="#modallogin" data-bs-toggle="modal">로그인</button>
             <a th:if="${session.logindto==null}"th:href="@{/member/login}"> <button type="button" class="btn btn-outline-primary me-2">로그인페이지</button></a>
             <a th:if="${session.logindto==null}"th:href="@{/member/signup}"> <button type="button" class="btn btn-outline-primary me-2">회원가입</button></a>

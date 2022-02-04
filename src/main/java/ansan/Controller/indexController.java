@@ -14,6 +14,8 @@ public class indexController {
     public String main() {
         return "main";
     }
+    @GetMapping("/error")
+    public String error(){return "error";}
 
     //안익은 쪽지의 개수세기
     @Autowired

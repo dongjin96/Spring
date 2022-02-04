@@ -31,7 +31,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Column
     private String m_phone;
     @Column
-    private String m_email;
+    private String memail;
     @Column
     private  String m_address;
     @Column
@@ -40,7 +40,11 @@ public class MemberEntity extends BaseTimeEntity {
     @Column
     private  Role m_grade;//회원등급
      //DB는 ROLE 자료형X->  @Enumerated(EnumType.String)문자열 자료형 변환
-
+    //oauth2 에서 동일한 이메일이면 업데이트 처리 메소드
+     public MemberEntity update(String name){
+      this.m_name =name;
+      return this;
+     }
   //해당 Role에 key반환 메소드드
     public String getRoleKey(){return this.m_grade.getKey();}
 
